@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from CinemaCore.forms import ClientChangeForm, ClientCreationForm, EmployeeChangeForm, EmployeeCreationForm
-from CinemaCore.models import Client, Employee
+from CinemaCore.models import Client, Employee, Actor, Movie, MovieCrew
 
 
 class ClientAdmin(BaseUserAdmin):
@@ -67,6 +67,9 @@ class EmployeeAdmin(BaseUserAdmin):
 # Now register the new UserAdmin...
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Employee, EmployeeAdmin)
+admin.site.register(Movie)
+admin.site.register(MovieCrew)
+admin.site.register(Actor)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from CinemaCore.models import Client
-from CinemaCore.models import Employee
+from CinemaCore.models import Client, Employee, Actor
 
 
 class ClientCreationForm(forms.ModelForm):
@@ -97,3 +96,9 @@ class EmployeeChangeForm(forms.ModelForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+
+
+class ActorCreationForm(forms.ModelForm):
+    class Meta:
+        model = Actor
+        fields = '__all__'

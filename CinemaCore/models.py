@@ -3,9 +3,16 @@ from django.core.validators import RegexValidator
 from django.db import models
 from CinemaCore import constants as const
 from django.contrib.auth.models import UnicodeUsernameValidator
+import datetime
 
 
 class User(AbstractUser):
+    # USER_TYPES = (
+    #     ('C', 'client'),
+    #     ('E', 'employee'),
+    #     ('S', 'SuperUser'),
+    # )
+    # user_type = models.CharField(max_length=1, choices=USER_TYPES)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     avatar = models.ImageField(upload_to='avatars', default=const.DEFAULT_PROFILE_IMAGE_USER)
@@ -15,7 +22,6 @@ class User(AbstractUser):
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)  # validators should be a list
     is_active = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
-
 
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
@@ -70,3 +76,34 @@ class Client(User):
     @property
     def is_client(self):
         return True
+
+
+class Movie(models.Model):
+    name = models.CharField(max_length=40)
+    duration = models.DurationField()
+    rating = models.FloatField()
+    release_date = models.DateField(default=datetime.date.today)
+    actors = models.ManyToManyField('Actor', through='MovieCrew')
+
+    def __str__(self):
+        return self.name
+
+
+class Actor(models.Model):
+    first_name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    picture = models.ImageField(upload_to='actors', default=const.DEFAULT_ACTOR_IMAGE)
+
+    def __str__(self):
+        return '%s %s' % (self.first_name, self.last_name)
+
+
+class MovieCrew(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    actor = models.ForeignKey(Actor, on_delete=models.CASCADE)
+    was_principal_actor = models.BooleanField(default=False)
+    role_played_description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return 'Actor: %s %s ---- Movie: %s' % (self.actor.first_name, self.actor.last_name, self.movie.name)
+
