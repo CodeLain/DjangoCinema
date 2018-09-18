@@ -26,7 +26,6 @@ class Forms(View):
         return render(request, 'forms/FormsPage.html', context)
 
     def post(selfs, request):
-        print('POSTED')
         form = ActorCreationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -35,3 +34,10 @@ class Forms(View):
         }
         return render(request, 'forms/FormsPage.html', context)
 
+
+class ActivateUser(View):
+    def get(self, request, token):
+        user = User.objects.get(activation_id=token)
+        user.is_active = True
+        user.save()
+        return HttpResponse('user activated')

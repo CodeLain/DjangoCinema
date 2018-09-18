@@ -89,7 +89,7 @@ class EmployeeChangeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
-        fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'is_active', 'deleted')
+        fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'is_active', 'deleted',)
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.

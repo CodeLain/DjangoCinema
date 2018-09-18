@@ -1,8 +1,14 @@
+import uuid
+import urllib.parse
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+from django.core.mail import send_mail, EmailMessage
 from django.db import models
 from CinemaCore import constants as const
 from django.contrib.auth.models import UnicodeUsernameValidator
+from django.template.loader import render_to_string, get_template
+from django.template import Context
+
 import datetime
 
 
@@ -22,6 +28,7 @@ class User(AbstractUser):
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)  # validators should be a list
     is_active = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+    activation_token = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
 
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
@@ -47,6 +54,20 @@ class User(AbstractUser):
         """
         Save user and if user is superuser, activate it.
         """
+        if not self.id:
+            server = 'localhost:8000'
+            token = str(self.activation_token)
+            url = urllib.parse.urljoin(server, token)
+
+            ctx = {
+                'url': url,
+            }
+            message = get_template('email.html').render(ctx)
+            # message = render_to_string('email.html', ctx)
+            msg = EmailMessage('TEST EMAIL', message, 'sender@example.com',
+                      ['federicoa@oktana.io', ])
+            msg.content_subtype = 'html'
+            msg.send()
         if not self.id and self.is_superuser:
             self.is_active = True
         super(User, self).save(*args, **kwargs)
