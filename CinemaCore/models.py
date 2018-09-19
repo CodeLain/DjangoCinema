@@ -3,6 +3,7 @@ import urllib.parse
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.core.mail import send_mail, EmailMessage
+from django.utils import timezone
 from django.db import models
 from CinemaCore import constants as const
 from django.contrib.auth.models import UnicodeUsernameValidator
@@ -11,6 +12,21 @@ from django.template import Context
 
 import datetime
 
+
+class Token(models.Model):
+    """
+    Used to validate account
+    """
+    value = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, db_index=True)
+    expiry_date = models.DateTimeField(default=const.EXPIRY_TOKEN_DELTA, editable=False)
+    user = models.OneToOneField(to='User', unique=True, editable=False, on_delete=models.CASCADE)
+
+    def is_valid(self):
+        """
+        Checks token expiration
+        :return: Token expired or not
+        """
+        return self.expiry_date >= timezone.now()
 
 class User(AbstractUser):
     # USER_TYPES = (
@@ -101,6 +117,7 @@ class Client(User):
 
 class Movie(models.Model):
     name = models.CharField(max_length=40)
+    moviedb_id = models.IntegerField(editable=False, unique=True, db_index=True)
     duration = models.DurationField()
     rating = models.FloatField()
     release_date = models.DateField(default=datetime.date.today)
@@ -127,4 +144,6 @@ class MovieCrew(models.Model):
 
     def __str__(self):
         return 'Actor: %s %s ---- Movie: %s' % (self.actor.first_name, self.actor.last_name, self.movie.name)
+
+
 
