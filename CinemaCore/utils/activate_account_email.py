@@ -6,7 +6,7 @@ from django.core.mail import send_mail, EmailMessage
 
 def send_activation_account_email(new_user):
     server = 'localhost:8000'
-    token = str(new_user.activation_token)
+    token = str(new_user.Token.value)
     url = server + token
 
     ctx = {

@@ -1,5 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
-from CinemaCore.models import User
+# from django.core.exceptions import DoesNotExist
+from CinemaCore.models import User, Employee, Client
 from django.db.models import Q
 
 
@@ -18,6 +19,13 @@ class SettingsBackend(ModelBackend):
             user = User.objects.get(Q(username=username) | Q(email=username))
         except User.DoesNotExist:
             return None
+        try:
+            user = user.client
+        except User.DoesNotExist:
+            try:
+                user = user.employee
+            except Employee.DoesNotExist:
+                pass
         return user if user.check_password(password) else None
         # user = User.objects.get(Q(username=username) | Q(email=username))
         # if user:

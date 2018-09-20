@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
+from django.contrib.auth import authenticate, login
 from CinemaCore.forms import ActorCreationForm
 
 from CinemaCore.models import User
@@ -8,6 +9,29 @@ from CinemaCore.models import User
 
 class CinemaHomePage(View):
     def get(self, request):
+        user = request.user
+        print(user.is_authenticated)
+        if user.is_authenticated:
+            request.session['fav_color'] = 'blue'
+            print('something')
+            print(user.first_name)
+            print('is clinet? %s' % user.is_client)
+            print('is employee? %s' % user.is_employee)
+        context = {
+            'user': user
+        }
+        return render(request, 'index/index.html', context)
+
+    def post(self, request):
+        #NEED TO FIX THE AUTHENTIFICATION, IS RETURNING FALSE ON BOTH OF THE USER TYPES
+        #PROBABLY
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        print(username)
+        print(password)
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        print(user.first_name)
         return render(request, 'index/index.html')
 
 
@@ -41,3 +65,5 @@ class ActivateUser(View):
         user.is_active = True
         user.save()
         return HttpResponse('user activated')
+
+
