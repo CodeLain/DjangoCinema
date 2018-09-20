@@ -1,16 +1,14 @@
-import uuid
-import urllib.parse
-from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
-from django.core.mail import send_mail, EmailMessage
-from django.utils import timezone
-from django.db import models
-from CinemaCore import constants as const
-from django.contrib.auth.models import UnicodeUsernameValidator
-from django.template.loader import render_to_string, get_template
-from django.template import Context
-
 import datetime
+import uuid
+
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import UnicodeUsernameValidator
+from django.core.validators import RegexValidator
+from django.db import models
+from django.utils import timezone
+
+from CinemaCore import constants as const
+from CinemaCore.utils.activate_account_email import send_activation_account_email
 
 
 class Token(models.Model):
@@ -28,6 +26,7 @@ class Token(models.Model):
         """
         return self.expiry_date >= timezone.now()
 
+
 class User(AbstractUser):
     # USER_TYPES = (
     #     ('C', 'client'),
@@ -44,7 +43,7 @@ class User(AbstractUser):
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)  # validators should be a list
     is_active = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
-    activation_token = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    # activation_token = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
 
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
@@ -71,26 +70,14 @@ class User(AbstractUser):
         Save user and if user is superuser, activate it.
         """
         if not self.id:
-            server = 'localhost:8000'
-            token = str(self.activation_token)
-            url = urllib.parse.urljoin(server, token)
-
-            ctx = {
-                'url': url,
-            }
-            message = get_template('email.html').render(ctx)
-            # message = render_to_string('email.html', ctx)
-            msg = EmailMessage('TEST EMAIL', message, 'sender@example.com',
-                      ['federicoa@oktana.io', ])
-            msg.content_subtype = 'html'
-            msg.send()
+            send_activation_account_email(self)
         if not self.id and self.is_superuser:
             self.is_active = True
         super(User, self).save(*args, **kwargs)
 
 
 class Employee(User):
-    administrator = models.BooleanField(default=False, help_text='Tick to give access to the admin page.',)
+    administrator = models.BooleanField(default=False, help_text='Tick to give access to the admin page.', )
 
     class Meta:
         verbose_name = "Employee"
@@ -105,7 +92,7 @@ class Employee(User):
 
 
 class Client(User):
-    is_special_client = models.BooleanField(default=False, help_text='Tick to mark as a special client.',)
+    is_special_client = models.BooleanField(default=False, help_text='Tick to mark as a special client.', )
 
     class Meta:
         verbose_name = "Client"
@@ -144,6 +131,3 @@ class MovieCrew(models.Model):
 
     def __str__(self):
         return 'Actor: %s %s ---- Movie: %s' % (self.actor.first_name, self.actor.last_name, self.movie.name)
-
-
-

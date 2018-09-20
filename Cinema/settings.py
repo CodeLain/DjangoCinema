@@ -131,6 +131,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Specify the custom user model which django is going to use
 AUTH_USER_MODEL = 'CinemaCore.User'
 
+AUTHENTICATION_BACKENDS = ['CinemaCore.authentication_backends.AuthenticateEmailOrUsernameOrToken.SettingsBackend', ]
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587

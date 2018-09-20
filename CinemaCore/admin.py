@@ -15,13 +15,13 @@ class ClientAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('id', 'username', 'email',)
-    readonly_fields = ('activation_token',)
+    # readonly_fields = ('activation_token',)
     # list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'is_special_client', 'deleted', 'is_active')}),
-        ('tokens', {'fields': ('activation_token',)}),
+        # ('tokens', {'fields': ('activation_token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -30,7 +30,7 @@ class ClientAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password1', 'password2')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'is_special_client', 'deleted', 'is_active')}),
-        ('Tokens', {'fields': ('activation_token',)}),
+        # ('Tokens', {'fields': ('activation_token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     search_fields = ('email', 'username')
@@ -47,13 +47,13 @@ class EmployeeAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('id', 'username', 'email',)
-    readonly_fields = ('activation_token',)
+    # readonly_fields = ('activation_token',)
     # list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'administrator', 'deleted', 'is_active')}),
-        ('tokens', {'fields': ('activation_token',)}),
+        # ('tokens', {'fields': ('activation_token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
