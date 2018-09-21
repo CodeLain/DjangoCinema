@@ -58,7 +58,7 @@ class Forms(View):
         }
         return render(request, 'forms/FormsPage.html', context)
 
-
+# request.session.get('value_key', 'default_value')
 class ActivateUser(View):
     def get(self, request, token):
         user = User.objects.get(activation_id=token)

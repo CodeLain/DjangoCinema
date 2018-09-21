@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'CinemaCore.apps.CinemacoreConfig',
     'phonenumber_field',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
