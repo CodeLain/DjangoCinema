@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from CinemaCore.forms import ClientChangeForm, ClientCreationForm, EmployeeChangeForm, EmployeeCreationForm
-from CinemaCore.models import Client, Employee, Actor, Movie, MovieCrew
+from CinemaCore.models import Client, Employee, Actor, Movie, MovieCrew, Token
 
 
 class ClientAdmin(BaseUserAdmin):
@@ -21,7 +21,7 @@ class ClientAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'is_special_client', 'deleted', 'is_active')}),
-        # ('tokens', {'fields': ('activation_token',)}),
+        # ('tokens', {'fields': ('token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -30,7 +30,7 @@ class ClientAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password1', 'password2')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'is_special_client', 'deleted', 'is_active')}),
-        # ('Tokens', {'fields': ('activation_token',)}),
+        # ('Tokens', {'fields': ('token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     search_fields = ('email', 'username')
@@ -53,7 +53,7 @@ class EmployeeAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'administrator', 'deleted', 'is_active')}),
-        # ('tokens', {'fields': ('activation_token',)}),
+        # ('tokens', {'fields': ('token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -62,11 +62,20 @@ class EmployeeAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password1', 'password2')}),
         ('Personal info', {'fields': ('first_name', 'last_name',)}),
         ('Account Info', {'fields': ('avatar', 'username', 'administrator', 'deleted', 'is_active')}),
+        # ('tokens', {'fields': ('token',)}),
         # ('Permissions', {'fields': ('',)}),
     )
     search_fields = ('email', 'username')
     ordering = ('email',)
     filter_horizontal = ()
+
+
+class TokenAdmin(admin.ModelAdmin):
+    readonly_fields = ('value', 'expiry_date', 'user')
+    # readonly_fields = ('activation_token',)
+
+    def has_add_permission(self, request):
+        return False
 
 
 # Now register the new UserAdmin...
@@ -75,6 +84,7 @@ admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Movie)
 admin.site.register(MovieCrew)
 admin.site.register(Actor)
+admin.site.register(Token, TokenAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

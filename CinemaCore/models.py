@@ -8,7 +8,7 @@ from django.db import models
 from django.utils import timezone
 
 from CinemaCore import constants as const
-from CinemaCore.utils.activate_account_email import send_activation_account_email
+from CinemaCore.utils.utils import send_activation_account_email, default_expiration_delta
 
 
 class Token(models.Model):
@@ -16,7 +16,7 @@ class Token(models.Model):
     Used to validate account
     """
     value = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, db_index=True)
-    expiry_date = models.DateTimeField(default=const.EXPIRY_TOKEN_DELTA, editable=False)
+    expiry_date = models.DateTimeField(default=default_expiration_delta, editable=False)
     user = models.OneToOneField(to='User', unique=True, editable=False, on_delete=models.CASCADE)
 
     def is_valid(self):
@@ -25,6 +25,7 @@ class Token(models.Model):
         :return: Token expired or not
         """
         return self.expiry_date >= timezone.now()
+
 
 
 class User(AbstractUser):
@@ -70,10 +71,15 @@ class User(AbstractUser):
         Save user and if user is superuser, activate it.
         """
         if not self.id:
-            send_activation_account_email(self)
-        if not self.id and self.is_superuser:
-            self.is_active = True
-        super(User, self).save(*args, **kwargs)
+            if self.is_superuser:
+                self.is_active = True
+                super(User, self).save(*args, **kwargs)
+            else:
+                super(User, self).save(*args, **kwargs)
+                token = Token(user=self)
+                send_activation_account_email(self)
+                token.save()
+
 
 
 class Employee(User):
