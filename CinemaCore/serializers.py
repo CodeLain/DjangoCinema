@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from rest_framework.authtoken.models import Token
 from CinemaCore.models import Actor, Movie, Employee
 
 
@@ -28,6 +28,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
+        Token.objects.create(user=user)
         return user
 # class UserSerializer(serializers.ModelSerializer):
 #     class Meta:

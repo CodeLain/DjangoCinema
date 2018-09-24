@@ -1,7 +1,10 @@
 from rest_framework import generics, viewsets
-
-from CinemaCore.models import Actor, Movie, MovieCrew
-from CinemaCore.serializers import ActorSerializer, MovieSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from CinemaCore.models import Actor, Movie, MovieCrew, Employee
+from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer
+from django.contrib.auth import authenticate
 
 '''
 class ChoiceList(generics.ListCreateAPIView):
@@ -10,6 +13,7 @@ class ChoiceList(generics.ListCreateAPIView):
         return queryset
     serializer_class = ChoiceSerializer
 '''
+
 
 class ActorList(generics.ListCreateAPIView):
     queryset = Actor.objects.all()
@@ -42,6 +46,25 @@ class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
+
+class EmployeeListCreate(generics.ListCreateAPIView):
+    authentication_classes = ()
+    permission_classes = ()
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+
+
+class LoginView(APIView):
+    permission_classes = ()
+
+    def post(self, request,):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        employee = authenticate(username=username, password=password)
+        if employee:
+            return Response({"token": employee.auth_token.key})
+        else:
+            return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
