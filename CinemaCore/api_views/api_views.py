@@ -2,9 +2,11 @@ from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authtoken.models import Token as RestToken
 from CinemaCore.models import Actor, Movie, MovieCrew, Employee
 from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer
 from django.contrib.auth import authenticate
+import datetime
 
 '''
 class ChoiceList(generics.ListCreateAPIView):
@@ -61,8 +63,10 @@ class LoginView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         employee = authenticate(username=username, password=password)
+
         if employee:
-            return Response({"token": employee.auth_token.key})
+            user_token = RestToken.objects.filter(user=employee).last()
+            return Response({"token": user_token.key})
         else:
             return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
