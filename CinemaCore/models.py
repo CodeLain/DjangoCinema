@@ -81,7 +81,6 @@ class User(AbstractUser):
                 token.save()
 
 
-
 class Employee(User):
     administrator = models.BooleanField(default=False, help_text='Tick to give access to the admin page.', )
 
@@ -134,6 +133,9 @@ class MovieCrew(models.Model):
     actor = models.ForeignKey(Actor, on_delete=models.CASCADE)
     was_principal_actor = models.BooleanField(default=False)
     role_played_description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('movie', 'actor')
 
     def __str__(self):
         return 'Actor: %s %s ---- Movie: %s' % (self.actor.first_name, self.actor.last_name, self.movie.name)

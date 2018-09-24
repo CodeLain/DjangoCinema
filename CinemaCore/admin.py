@@ -78,10 +78,13 @@ class TokenAdmin(admin.ModelAdmin):
         return False
 
 
+class MovieAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'release_date',)
+
 # Now register the new UserAdmin...
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Employee, EmployeeAdmin)
-admin.site.register(Movie)
+admin.site.register(Movie, MovieAdmin)
 admin.site.register(MovieCrew)
 admin.site.register(Actor)
 admin.site.register(Token, TokenAdmin)

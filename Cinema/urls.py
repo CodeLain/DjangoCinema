@@ -18,16 +18,24 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from CinemaCore import urls as cinema_urls
-from CinemaCore.api_views.api_views import ActorList, ActorDetail, MovieDetail, MovieList, ActorsListByMovie
+from CinemaCore.api_views.api_views import ActorList, ActorDetail, MovieDetail, MovieList, ActorsListByMovie, MovieViewSet
+from rest_framework.routers import DefaultRouter
+
+
+router = DefaultRouter()
+router.register('movies', MovieViewSet, base_name='movies')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(cinema_urls)),
     path("actors/", ActorList.as_view(), name="actors_list"),
     path("actors/<int:pk>/", ActorDetail.as_view(), name="actors_detail"),
-    path("movies/", MovieList.as_view(), name="movie_detail"),
-    path("movies/<int:pk>/", MovieDetail.as_view(), name="movie_list"),
+    # path("movies/", MovieList.as_view(), name="movie_detail"),
+    # path("movie/<int:pk>/", MovieDetail.as_view(), name="movie_list"),
     path("movie_actors/<int:pk>/", ActorsListByMovie.as_view(), name="movie_actors"),
+    path("movie/<int:pk>/actors/", ActorsListByMovie.as_view(), name="movie_actors"),
 ]
+
+urlpatterns += router.urls
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

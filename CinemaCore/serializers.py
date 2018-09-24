@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from CinemaCore.models import Actor, Movie
+from CinemaCore.models import Actor, Movie, Employee
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -13,3 +13,33 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+            model = Employee
+            fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'is_active', 'deleted', 'password')
+            extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = Employee(
+            email=validated_data['email'],
+            username=validated_data['username']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('username', 'email', 'password')
+#         extra_kwargs = {'password': {'write_only': True}}
+#
+#     def create(self, validated_data):
+#         user = User(
+#             email=validated_data['email'],
+#             username=validated_data['username']
+#         )
+#         user.set_password(validated_data['password'])
+#         user.save()
+#         return user

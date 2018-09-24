@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 
 from CinemaCore.models import Actor, Movie, MovieCrew
 from CinemaCore.serializers import ActorSerializer, MovieSerializer
@@ -10,6 +10,7 @@ class ChoiceList(generics.ListCreateAPIView):
         return queryset
     serializer_class = ChoiceSerializer
 '''
+
 class ActorList(generics.ListCreateAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
@@ -20,6 +21,7 @@ class ActorsListByMovie(generics.ListAPIView):
         queryset = Actor.objects.filter(moviecrew__movie_id=self.kwargs["pk"])
         return queryset
     serializer_class = ActorSerializer
+
 
 class ActorDetail(generics.RetrieveDestroyAPIView):
     queryset = Actor.objects.all()
@@ -34,6 +36,13 @@ class MovieList(generics.ListCreateAPIView):
 class MovieDetail(generics.RetrieveDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+
+
+class MovieViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
 # from django.shortcuts import get_object_or_404
