@@ -79,7 +79,8 @@ class User(AbstractUser):
                 token = Token(user=self)
                 send_activation_account_email(self)
                 token.save()
-
+        else:
+            super(User, self).save(*args, **kwargs)
 
 class Employee(User):
     administrator = models.BooleanField(default=False, help_text='Tick to give access to the admin page.', )

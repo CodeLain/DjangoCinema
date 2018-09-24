@@ -3,9 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token as RestToken
+from rest_framework.permissions import IsAuthenticated
 from CinemaCore.models import Actor, Movie, MovieCrew, Employee
 from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 import datetime
 
 '''
@@ -50,8 +51,7 @@ class MovieViewSet(viewsets.ModelViewSet):
 
 
 class EmployeeListCreate(generics.ListCreateAPIView):
-    authentication_classes = ()
-    permission_classes = ()
+    permission_classes = (IsAuthenticated,)
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
@@ -63,10 +63,16 @@ class LoginView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         employee = authenticate(username=username, password=password)
-
+        # login(request, employee)
         if employee:
-            user_token = RestToken.objects.filter(user=employee).last()
-            return Response({"token": user_token.key})
+            # user_token = RestToken.objects.filter(user=employee).last()
+            # try:
+            #     user_token = employee.auth_token
+            # except RestToken.DoesNotExist:
+            #     new_token = RestToken.objects.create(user=employee)
+            #     user_token = new_token
+            auth_token, _ = RestToken.objects.get_or_create(user=employee)
+            return Response({"token": auth_token.key}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
