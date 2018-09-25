@@ -27,7 +27,6 @@ class Token(models.Model):
         return self.expiry_date >= timezone.now()
 
 
-
 class User(AbstractUser):
     # USER_TYPES = (
     #     ('C', 'client'),
@@ -77,10 +76,11 @@ class User(AbstractUser):
             else:
                 super(User, self).save(*args, **kwargs)
                 token = Token(user=self)
-                send_activation_account_email(self)
+                # send_activation_account_email(self)
                 token.save()
         else:
             super(User, self).save(*args, **kwargs)
+
 
 class Employee(User):
     administrator = models.BooleanField(default=False, help_text='Tick to give access to the admin page.', )

@@ -21,7 +21,7 @@ class SettingsBackend(ModelBackend):
             return None
         try:
             user = user.client
-        except User.DoesNotExist:
+        except Client.DoesNotExist:
             try:
                 user = user.employee
             except Employee.DoesNotExist:

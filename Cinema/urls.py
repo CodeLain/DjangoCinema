@@ -18,7 +18,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from CinemaCore import urls as cinema_urls
-from CinemaCore.api_views.api_views import ActorList, ActorDetail, MovieDetail, MovieList, ActorsListByMovie, MovieViewSet, EmployeeListCreate, LoginView
+from CinemaCore.api_views.api_views import ActorList, ActorDetail, MovieDetail, MovieList, ActorsListByMovie, \
+    MovieViewSet, EmployeeListCreate, LoginView, ActivateUserView
 from rest_framework.routers import DefaultRouter
 
 
@@ -33,9 +34,10 @@ urlpatterns = [
     # path("movies/", MovieList.as_view(), name="movie_detail"),
     # path("movie/<int:pk>/", MovieDetail.as_view(), name="movie_list"),
     path("movie_actors/<int:pk>/", ActorsListByMovie.as_view(), name="movie_actors"),
-    path("movie/<int:pk>/actors/", ActorsListByMovie.as_view(), name="movie_actors"),
+    # path("movie/<int:pk>/actors/", ActorsListByMovie.as_view(), name="movie_actors"),
     path("employees_list/", EmployeeListCreate.as_view(), name="employees_list"),
     path("login/", LoginView.as_view(), name="login"),
+    path('activ_user/', ActivateUserView.as_view(), name='activate_user'),
 ]
 
 urlpatterns += router.urls

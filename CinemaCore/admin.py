@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from CinemaCore.forms import ClientChangeForm, ClientCreationForm, EmployeeChangeForm, EmployeeCreationForm
-from CinemaCore.models import Client, Employee, Actor, Movie, MovieCrew, Token
+from CinemaCore.models import Client, Employee, Actor, Movie, MovieCrew, Token, User
 
 
 class ClientAdmin(BaseUserAdmin):
@@ -81,6 +81,11 @@ class TokenAdmin(admin.ModelAdmin):
 class MovieAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'release_date',)
 
+
+class UserAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
 # Now register the new UserAdmin...
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Employee, EmployeeAdmin)
@@ -88,6 +93,7 @@ admin.site.register(Movie, MovieAdmin)
 admin.site.register(MovieCrew)
 admin.site.register(Actor)
 admin.site.register(Token, TokenAdmin)
+admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
