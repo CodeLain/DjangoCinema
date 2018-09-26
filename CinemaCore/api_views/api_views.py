@@ -6,7 +6,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token as RestToken
 from rest_framework.permissions import IsAuthenticated
+
+from CinemaCore.api_permissions.permissions import IsEmployee
 from CinemaCore.models import Actor, Movie, MovieCrew, Employee, Token, Client
+from CinemaCore.pagination.pagination import MovieListPaginationOffset
 from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer
 from django.contrib.auth import authenticate, login
 import datetime
@@ -23,6 +26,7 @@ class ChoiceList(generics.ListCreateAPIView):
 class ActorList(generics.ListCreateAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    page_size = 20
 
     def get(self, request, *args, **kwargs):
         actors_list = self.list(request, *args, **kwargs)
@@ -48,6 +52,7 @@ class ActorsListByMovie(generics.ListAPIView):
 class ActorDetail(generics.RetrieveDestroyAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    permission_classes = [IsEmployee, ]
 
 
 class MovieList(generics.ListCreateAPIView):
@@ -63,6 +68,8 @@ class MovieDetail(generics.RetrieveDestroyAPIView):
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    pagination_class = MovieListPaginationOffset
+    page_size = 20
 
     def list(self, request, *args, **kwargs):
         print("LISTING AND DOING OTHER STUFF")
@@ -113,7 +120,7 @@ class LoginView(APIView):
 
 class ActivateUserView(APIView):
     permission_classes = ()
-
+    # permission_classes = [IsAccountAdminOrReadOnly, IsAdminOrIsSelf]
     def post(self, request,):
         # username = request.data.get("username")
         # password = request.data.get("password")
