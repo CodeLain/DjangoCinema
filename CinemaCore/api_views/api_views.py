@@ -1,16 +1,19 @@
 import json
 
+from django.db.models import Q
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token as RestToken
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
 
 from CinemaCore.api_permissions.permissions import IsEmployee
 from CinemaCore.models import Actor, Movie, MovieCrew, Employee, Token, Client
 from CinemaCore.pagination.pagination import MovieListPaginationOffset
-from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer
+from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer, MovieCreateUpdateSerializer, \
+    ClientSerializer, ClientSerializer2
 from django.contrib.auth import authenticate, login
 import datetime
 
@@ -30,11 +33,11 @@ class ActorList(generics.ListCreateAPIView):
 
     def get(self, request, *args, **kwargs):
         actors_list = self.list(request, *args, **kwargs)
-        data = {
+        actors_list.data = {
             "message": "requested actors list",
             "actors_list": actors_list.data
         }
-        return Response(data)
+        return actors_list
 
     def create(self, request, *args, **kwargs):
         """Overriding the creation"""
@@ -79,7 +82,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         pass
 
     def retrieve(self, request, *args, **kwargs):
-        pass
+        return super(MovieViewSet, self).retrieve(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         pass
@@ -160,6 +163,36 @@ class ActivateUserView(APIView):
             }
 
         return Response(data)
+
+
+class MovieCreateView(generics.CreateAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieCreateUpdateSerializer
+
+
+class ClientList(generics.ListAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer2
+    permission_classes = [IsEmployee, ]
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('username', 'email', )  # profile__profession
+
+    # def get_queryset(self, *args, **kwargs):
+    #     queryset_list = Client.objects.all()
+    #     query = self.request.query_params.get("q")
+    #     if query:
+    #         queryset_list = queryset_list.filter(
+    #             Q(first_name__icontains=query) |
+    #             Q(last_name__icontains=query) |
+    #             Q(username__icontains=query)
+    #             # Q(email__icontains=query)
+    #         )
+    #     return queryset_list
+
+
+
+
+# class ClientList(generics
 
 
 # from rest_framework.views import APIView
