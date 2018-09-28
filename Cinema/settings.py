@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = '5*_c+6&hfcmc)(fpn_)q*(s-5o!@i8)1hk2zgc4%5e0+&i53un'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -41,6 +39,9 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'rest_framework',
     'rest_framework.authtoken',
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -67,13 +68,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'Cinema.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -84,7 +86,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -104,7 +105,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -118,14 +118,15 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', )
+        'rest_framework.permissions.IsAuthenticated',)
 }
 
 # Static files (CSS, JavaScript, Images)
@@ -142,7 +143,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Specify the custom user model which django is going to use
 AUTH_USER_MODEL = 'CinemaCore.User'
 
-AUTHENTICATION_BACKENDS = ['CinemaCore.authentication_backends.AuthenticateEmailOrUsernameOrToken.SettingsBackend', ]
+AUTHENTICATION_BACKENDS = ['CinemaCore.authentication_backends.AuthenticateEmailOrUsernameOrToken.SettingsBackend',
+                           'rest_framework_social_oauth2.backends.DjangoOAuth2',
+                           'django.contrib.auth.backends.ModelBackend',
+                           'social_core.backends.github.GithubOAuth2',
+                           ]
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
@@ -150,3 +155,6 @@ EMAIL_HOST_USER = 'oktatest'
 # d7934015@nwytg.net
 EMAIL_HOST_PASSWORD = 'hola12345'
 EMAIL_USE_TLS = True
+
+SOCIAL_AUTH_GITHUB_KEY = 'c3202a1d8e1d2cef63b5'
+SOCIAL_AUTH_GITHUB_SECRET = '1a8ab8f9ada29152af7bd86961e804eab91b13e7'

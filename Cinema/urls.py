@@ -38,6 +38,7 @@ urlpatterns = [
     path("employees_list/", EmployeeListCreate.as_view(), name="employees_list"),
     path("login/", LoginView.as_view(), name="login"),
     path('activ_user/', ActivateUserView.as_view(), name='activate_user'),
+    path(r'^auth/', include('rest_framework_social_oauth2.urls')),
 ]
 
 urlpatterns += router.urls
