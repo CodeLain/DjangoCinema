@@ -10,10 +10,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
 
 from CinemaCore.api_permissions.permissions import IsEmployee
-from CinemaCore.models import Actor, Movie, MovieCrew, Employee, Token, Client
+from CinemaCore.models import Actor, Movie, MovieCrew, Employee, Token, Client, User
 from CinemaCore.pagination.pagination import MovieListPaginationOffset
 from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer, MovieCreateUpdateSerializer, \
-    ClientSerializer, ClientSerializer2
+    ClientSerializer, ClientSerializer2, UserSerializer
 from django.contrib.auth import authenticate, login
 import datetime
 
@@ -190,7 +190,10 @@ class ClientList(generics.ListAPIView):
     #     return queryset_list
 
 
-
+class UserListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, ]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 # class ClientList(generics
 

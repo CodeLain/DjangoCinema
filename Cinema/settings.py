@@ -24,7 +24,7 @@ SECRET_KEY = '5*_c+6&hfcmc)(fpn_)q*(s-5o!@i8)1hk2zgc4%5e0+&i53un'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['something.local.com', '127.0.0.1', '.ngrok.io', '*']
 
 # Application definition
 
@@ -147,6 +147,8 @@ AUTHENTICATION_BACKENDS = ['CinemaCore.authentication_backends.AuthenticateEmail
                            'rest_framework_social_oauth2.backends.DjangoOAuth2',
                            'django.contrib.auth.backends.ModelBackend',
                            'social_core.backends.github.GithubOAuth2',
+                            'social_core.backends.facebook.FacebookAppOAuth2',
+                            'social_core.backends.facebook.FacebookOAuth2',
                            ]
 
 EMAIL_HOST = 'smtp.sendgrid.net'
@@ -156,5 +158,16 @@ EMAIL_HOST_USER = 'oktatest'
 EMAIL_HOST_PASSWORD = 'hola12345'
 EMAIL_USE_TLS = True
 
+SOCIAL_AUTH_FACEBOOK_KEY = '738286526507320'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'fda3928bbb2867a9335d6a0c0d50e3ce'
 SOCIAL_AUTH_GITHUB_KEY = 'c3202a1d8e1d2cef63b5'
 SOCIAL_AUTH_GITHUB_SECRET = '1a8ab8f9ada29152af7bd86961e804eab91b13e7'
+
+SOCIAL_AUTH_GITHUB_SCOPE = ['email', 'user']
+SOCIAL_AUTH_GITHUB_PROFILE_EXTRA_PARAMS = {
+    'fields': 'user, email'
+}
+# 738286526507320
+# fda3928bbb2867a9335d6a0c0d50e3ce
+
+# SECURE_SSL_REDIRECT = True

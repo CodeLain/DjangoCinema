@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from CinemaCore.models import Actor, Movie, Employee, MovieCrew, Client
+from CinemaCore.models import Actor, Movie, Employee, MovieCrew, Client, User
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -89,4 +89,9 @@ class ClientSerializer2(ClientSerializer):
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'is_active', 'deleted',
                   'is_special_client']
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'is_active', 'deleted']
 #authentication with facebook
