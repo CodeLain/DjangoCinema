@@ -1,6 +1,3 @@
-import json
-
-from django.db.models import Q
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,13 +6,12 @@ from rest_framework.authtoken.models import Token as RestToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
 
-from CinemaCore.api_permissions.permissions import IsEmployee
-from CinemaCore.models import Actor, Movie, MovieCrew, Employee, Token, Client, User
+from CinemaCore.api.deprecated_api_views.permissions import IsEmployee
+from CinemaCore.models import Actor, Movie, Employee, Token, Client, User
 from CinemaCore.pagination.pagination import MovieListPaginationOffset
-from CinemaCore.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer, MovieCreateUpdateSerializer, \
-    ClientSerializer, ClientSerializer2, UserSerializer
-from django.contrib.auth import authenticate, login
-import datetime
+from CinemaCore.api.deprecated_api_views.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer, MovieCreateUpdateSerializer, \
+    ClientSerializer2, UserSerializer
+from django.contrib.auth import authenticate
 
 '''
 class ChoiceList(generics.ListCreateAPIView):

@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from CinemaCore.views import CinemaHomePage, Packages, Forms, ActivateUser
+from CinemaCore.views import CinemaHomePage, Packages, Forms, ActivateUser, LoginView
 
 urlpatterns = [
     path('', CinemaHomePage.as_view(), name='index'),
     path('packages/', Packages.as_view(), name='packages'),
     path('create_actor/', Forms.as_view(), name='create_actor'),
     path('articles/<uuid:token>/', ActivateUser.as_view()),
+    path('login/', LoginView.as_view(), name='login'),
+    path('accounts/login/', CinemaHomePage.as_view(), name='debug'),
 ]

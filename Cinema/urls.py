@@ -18,30 +18,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from CinemaCore import urls as cinema_urls
-from CinemaCore.api_views.api_views import ActorList, ActorDetail, MovieDetail, MovieList, ActorsListByMovie, \
-    MovieViewSet, EmployeeListCreate, LoginView, ActivateUserView, UserListView
-from rest_framework.routers import DefaultRouter
-
-
-router = DefaultRouter()
-router.register('movies', MovieViewSet, base_name='movies')
+from CinemaCore.api import api_urls
+from CinemaCore.api.deprecated_api_views import deprecated_api_urls as deprecated_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(cinema_urls)),
-    path("actors/", ActorList.as_view(), name="actors_list"),
-    path("actors/<int:pk>/", ActorDetail.as_view(), name="actors_detail"),
-    # path("movies/", MovieList.as_view(), name="movie_detail"),
-    # path("movie/<int:pk>/", MovieDetail.as_view(), name="movie_list"),
-    path("movie_actors/<int:pk>/", ActorsListByMovie.as_view(), name="movie_actors"),
-    # path("movie/<int:pk>/actors/", ActorsListByMovie.as_view(), name="movie_actors"),
-    path("employees_list/", EmployeeListCreate.as_view(), name="employees_list"),
-    path("login/", LoginView.as_view(), name="login"),
-    path('activ_user/', ActivateUserView.as_view(), name='activate_user'),
+    path('deprecated_api', include(deprecated_api)),
+    path('api/', include(api_urls)),
     path('auth/', include('rest_framework_social_oauth2.urls')),
-    path('user_list/', UserListView.as_view(), name='user_list'),
 ]
 
-urlpatterns += router.urls
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

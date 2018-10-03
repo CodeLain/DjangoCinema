@@ -67,3 +67,7 @@ class ActivateUser(View):
         return HttpResponse('user activated')
 
 
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'cinema_app/login.html')
+

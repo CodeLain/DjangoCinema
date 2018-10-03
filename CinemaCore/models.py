@@ -3,6 +3,7 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UnicodeUsernameValidator
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
@@ -140,3 +141,20 @@ class MovieCrew(models.Model):
 
     def __str__(self):
         return 'Actor: %s %s ---- Movie: %s' % (self.actor.first_name, self.actor.last_name, self.movie.name)
+
+
+class CinemaRoom(models.Model):
+    room_id = models.IntegerField(max_length=3, unique=True)
+    capacity = models.IntegerField(max_length=3)
+
+
+class MovieFunction(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    cinema_room = models.ForeignKey(CinemaRoom, on_delete=models.CASCADE)
+    schedule = models.DateTimeField()
+
+    def clean(self):
+        # Don't allow functions in a time interval of 2 hours
+        problematic_movie_function = MovieFunction.objects.filter(schedule__gte=self.schedule - datetime.timedelta(hours=2)).first()
+        if problematic_movie_function:
+            raise ValidationError('There is another function in that time')
