@@ -95,3 +95,20 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'is_active', 'deleted']
 #authentication with facebook
+
+
+class CuadraticSerializer(serializers.Serializer):
+    param1 = serializers.IntegerField()
+    param2 = serializers.IntegerField()
+    result = serializers.SerializerMethodField()
+
+    def get_result(self, obj):
+        # print('='*100,obj,'='*100)
+        x = obj.get('param1')
+        y = obj.get('param2')
+        return y + x
+
+    def validate(self, data):
+        if data['param1'] > data['param2']:
+            raise serializers.ValidationError('Wrong inputs: param1 > param2')
+        return data

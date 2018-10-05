@@ -144,8 +144,8 @@ class MovieCrew(models.Model):
 
 
 class CinemaRoom(models.Model):
-    room_id = models.IntegerField(max_length=3, unique=True)
-    capacity = models.IntegerField(max_length=3)
+    room_id = models.IntegerField(unique=True)
+    capacity = models.IntegerField()
 
 
 class MovieFunction(models.Model):

@@ -10,7 +10,7 @@ from CinemaCore.api.deprecated_api_views.permissions import IsEmployee
 from CinemaCore.models import Actor, Movie, Employee, Token, Client, User
 from CinemaCore.pagination.pagination import MovieListPaginationOffset
 from CinemaCore.api.deprecated_api_views.serializers import ActorSerializer, MovieSerializer, EmployeeSerializer, MovieCreateUpdateSerializer, \
-    ClientSerializer2, UserSerializer
+    ClientSerializer2, UserSerializer, CuadraticSerializer
 from django.contrib.auth import authenticate
 
 '''
@@ -215,3 +215,14 @@ class UserListView(generics.ListAPIView):
 #         data = ActorSerializer(actor).data
 #         return Response(data)
 
+class EcuationView(APIView):
+    def post(self, request):
+        param1 = request.data.get("param1")
+        param2 = request.data.get("param2")
+        serializer = CuadraticSerializer(data={'param1': param1, 'param2': param2})
+        if serializer.is_valid():
+            return Response(serializer.data)
+        data = {
+            'result': "wrong data"
+        }
+        return Response(data, status=status.HTTP_406_NOT_ACCEPTABLE)

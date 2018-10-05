@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from CinemaCore.api.deprecated_api_views.api_views import ActorList, ActorDetail, ActorsListByMovie, \
-    MovieViewSet, EmployeeListCreate, ActivateUserView, UserListView, MovieList, MovieDetail, LoginView
+    MovieViewSet, EmployeeListCreate, ActivateUserView, UserListView, MovieList, MovieDetail, LoginView, EcuationView
 from rest_framework.routers import DefaultRouter
 
 
@@ -19,6 +19,7 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path('activ_user/', ActivateUserView.as_view(), name='activate_user'),
     path('user_list/', UserListView.as_view(), name='user_list'),
+    path('sum/', EcuationView.as_view(), name='user_list'),
 
 ]
 

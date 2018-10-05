@@ -24,7 +24,7 @@ from CinemaCore.api.deprecated_api_views import deprecated_api_urls as deprecate
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(cinema_urls)),
-    path('deprecated_api', include(deprecated_api)),
+    path('deprecated_api/', include(deprecated_api)),
     path('api/', include(api_urls)),
     path('auth/', include('rest_framework_social_oauth2.urls')),
 ]
