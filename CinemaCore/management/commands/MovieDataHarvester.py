@@ -12,9 +12,9 @@ from CinemaCore.models import Movie, Actor, MovieCrew
 class Command(BaseCommand):
     def handle(self, *args, **options):
         # url = 'http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc?&api_key=76aa5558b982395ead98b1de183705f7&page=2'
+        api_url = 'http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc?&api_key={}&page={}'
+        api_key = '76aa5558b982395ead98b1de183705f7'
         for x in range(1, 5):
-            api_url = 'http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc?&api_key={}&page={}'
-            api_key = '76aa5558b982395ead98b1de183705f7'
 
             json_movies = requests.get(api_url.format(api_key, str(x))).json()
             print(json_movies)

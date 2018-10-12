@@ -9,7 +9,7 @@ from django.db import models
 from django.utils import timezone
 
 from CinemaCore import constants as const
-from CinemaCore.utils.utils import send_activation_account_email, default_expiration_delta
+from CinemaCore.utils.utils import send_activation_account_email, default_expiration_delta, unique_slug_generator
 
 
 class Token(models.Model):
@@ -112,13 +112,20 @@ class Client(User):
 class Movie(models.Model):
     name = models.CharField(max_length=40)
     moviedb_id = models.IntegerField(editable=False, unique=True, db_index=True)
+    slug = models.SlugField(null=False, unique=True)
     duration = models.DurationField()
     rating = models.FloatField()
     release_date = models.DateField(default=datetime.date.today)
     actors = models.ManyToManyField('Actor', through='MovieCrew')
+    """
+    create a signal or overide save to generate the slug!
+    """
 
     def __str__(self):
         return self.name
+
+    def slug_generator(self):
+        return unique_slug_generator(self)
 
 
 class Actor(models.Model):
@@ -153,8 +160,12 @@ class MovieFunction(models.Model):
     cinema_room = models.ForeignKey(CinemaRoom, on_delete=models.CASCADE)
     schedule = models.DateTimeField()
 
+    def __str__(self):
+        return 'Movie: %s - Room: %s - Schedule: %s' % (self.movie.name, self.cinema_room.room_id, self.schedule)
+
     def clean(self):
         # Don't allow functions in a time interval of 2 hours
-        problematic_movie_function = MovieFunction.objects.filter(schedule__gte=self.schedule - datetime.timedelta(hours=2)).first()
+        problematic_movie_function = MovieFunction.objects.filter(
+            schedule__gte=self.schedule - datetime.timedelta(hours=1, minutes=59, seconds=59), cinema_room=self.cinema_room).first()
         if problematic_movie_function:
-            raise ValidationError('There is another function in that time')
+            raise ValidationError('There is another function in that time in the same room.')
