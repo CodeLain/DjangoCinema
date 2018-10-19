@@ -112,20 +112,29 @@ class Client(User):
 class Movie(models.Model):
     name = models.CharField(max_length=40)
     moviedb_id = models.IntegerField(editable=False, unique=True, db_index=True)
-    slug = models.SlugField(null=False, unique=True)
+    slug = models.SlugField(null=False, unique=True, editable=False)
     duration = models.DurationField()
     rating = models.FloatField()
     release_date = models.DateField(default=datetime.date.today)
     actors = models.ManyToManyField('Actor', through='MovieCrew')
-    """
-    create a signal or overide save to generate the slug!
-    """
+    __original_name = None
+
+    def __init__(self, *args, **kwargs):
+        super(Movie, self).__init__(*args, **kwargs)
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if not self.id:
+            self.__original_name = self.name
+            self.slug = unique_slug_generator(self)
+
+        if self.name != self.__original_name:
+            self.slug = unique_slug_generator(self)
+
+        super(Movie, self).save(force_insert, force_update, *args, **kwargs)
+        self.__original_name = self.name
 
     def __str__(self):
         return self.name
-
-    def slug_generator(self):
-        return unique_slug_generator(self)
 
 
 class Actor(models.Model):

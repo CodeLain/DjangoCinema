@@ -80,6 +80,7 @@ class TokenAdmin(admin.ModelAdmin):
 
 class MovieAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'release_date',)
+    readonly_fields = ('slug', 'moviedb_id')
 
 
 class UserAdmin(admin.ModelAdmin):
