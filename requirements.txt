@@ -10,4 +10,4 @@ phonenumbers==8.9.13
 Pillow==5.2.0
 pytz==2018.5
 requests==2.19.1
-urllib3==1.23
+urllib3==1.26.5
