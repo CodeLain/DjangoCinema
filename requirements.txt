@@ -7,7 +7,7 @@ django-rest-framework==0.1.0
 djangorestframework==3.8.2
 idna==2.7
 phonenumbers==8.9.13
-Pillow==5.2.0
+Pillow==9.3.0
 pytz==2018.5
 requests==2.19.1
 urllib3==1.23
